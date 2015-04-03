@@ -1,0 +1,7 @@
+摘要
+
+One-Time Pad:
+安全定义：Perfect Security
+形式定义：∀m∈M∀c∈C∀Pr[C=c]>0, Pr[M=m|C=c]=Pr[M=m]
+算法：xor
+算法对抗策：无
