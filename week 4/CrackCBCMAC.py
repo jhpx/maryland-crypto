@@ -25,25 +25,26 @@ def strxor(a, b):
         strlist = [chr(ord(x) ^ ord(y)) for (x, y) in zip(a, b)]
         return "".join(strlist)
 
-def attack(data):
+def attack(text):
     '''Find tag for given text.'''
     Oracle_Connect()
-    if(len(data)%32 == 0):
-        tag = Mac(data[0:32], 32)
-        for i in range(1, len(data)/32):
-            first16 = data[i*32:i*32+16]
-            second16 = data[i*32+16:i*32+32]
+    if(len(text)%32 == 0):
+        tag = Mac(text[0:32], 32)
+        for i in range(1, len(text)/32):
+            first16 = text[i*32:i*32+16]
+            second16 = text[i*32+16:i*32+32]
 
             d = strxor(str(tag), first16) + second16
             tag = Mac(d, len(d))
-    ret = Vrfy(data, len(data), tag)
+    ret = Vrfy(text, len(text), tag)
 
     if (ret==1):
         print "Message verified successfully!"
     else:
         print "Message verification failed."
-
+        tag = bytearray()
     Oracle_Disconnect()
+
     return str(tag)
 
 # Test Code
