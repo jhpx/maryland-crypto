@@ -6,14 +6,17 @@ NOT_BINARY_STR_ERR = -1
 MISSING_DELIMITER_ERR = -2
 ORIGINAL_MSG_ERR = -3
 
+#SERVER_IP = '52.7.91.172' #if you are closer to the East Coast of the US
+SERVER_IP = '52.25.162.51' #if you are closer to the West Coast of the US
+
 def Oracle_Connect():
     import socket
     global sign_sock
     global vrfy_sock
     sign_sock, vrfy_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM), socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
-        sign_sock.connect(('54.165.60.84', 8080))
-        vrfy_sock.connect(('54.165.60.84', 8081))
+        sign_sock.connect((SERVER_IP, 8080))
+        vrfy_sock.connect((SERVER_IP, 8081))
     except socket.error as e:
         print e
         return -1
@@ -52,7 +55,7 @@ def Sign(msg):
     resp = sign_sock.recv(MAX_PACKET_LEN)
     try:
         sigma = int(resp, 2)
-    except ValueError as e:
+    except ValueError:
         sigma = int(resp)
 
     if sigma == NOT_BINARY_STR_ERR:

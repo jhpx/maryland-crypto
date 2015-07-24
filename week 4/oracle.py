@@ -1,14 +1,17 @@
 mac_sock = None
 vrfy_sock = None
 
+#SERVER_IP = '52.7.91.172' #if you are closer to the East Coast of the US
+SERVER_IP = '52.25.162.51' #if you are closer to the West Coast of the US
+
 def Oracle_Connect():
     import socket
     global mac_sock
     global vrfy_sock
     mac_sock, vrfy_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM), socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
-        mac_sock.connect(('54.165.60.84', 81))
-        vrfy_sock.connect(('54.165.60.84', 82))
+        mac_sock.connect((SERVER_IP, 81))
+        vrfy_sock.connect((SERVER_IP, 82))
     except socket.error as e:
         print e
         return -1
