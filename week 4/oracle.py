@@ -1,14 +1,16 @@
 mac_sock = None
 vrfy_sock = None
 
-#SERVER_IP = '52.7.91.172' #if you are closer to the East Coast of the US
-SERVER_IP = '52.25.162.51' #if you are closer to the West Coast of the US
+# SERVER_IP = '52.7.91.172' #if you are closer to the East Coast of the US
+SERVER_IP = '52.25.162.51'  # if you are closer to the West Coast of the US
+
 
 def Oracle_Connect():
     import socket
     global mac_sock
     global vrfy_sock
-    mac_sock, vrfy_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM), socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    mac_sock, vrfy_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM), socket.socket(
+        socket.AF_INET, socket.SOCK_STREAM)
     try:
         mac_sock.connect((SERVER_IP, 81))
         vrfy_sock.connect((SERVER_IP, 82))
@@ -19,6 +21,7 @@ def Oracle_Connect():
     print "Connected to server successfully."
 
     return 0
+
 
 def Oracle_Disconnect():
     if not mac_sock or not vrfy_sock:
@@ -33,6 +36,8 @@ def Oracle_Disconnect():
     return 0
 
 # Packet Structure: < mlength(1) || message(mlength) || null-terminator(1) >
+
+
 def Mac(message, mlength):
     if not mac_sock or not vrfy_sock:
         print "[WARNING]: You haven't connected to the server yet."
@@ -47,7 +52,10 @@ def Mac(message, mlength):
 
     return bytearray(tag)
 
-# Packet Structure: < mlength(1) || message(mlength) || tag(16) || null-terminator(1) >
+# Packet Structure: < mlength(1) || message(mlength) || tag(16) ||
+# null-terminator(1) >
+
+
 def Vrfy(message, mlength, tag):
     if not mac_sock or not vrfy_sock:
         print "[WARNING]: You haven't conected to the server yet."

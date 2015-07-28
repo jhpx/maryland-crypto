@@ -28,6 +28,7 @@ n = 1190773939949763133582095148720041867810836384740072128655715347994558029847
 e = 65537
 msg = "Crypto is hard --- even schemes that look complex can be broken"
 
+
 def attack(text):
     '''Find signature for given text.'''
     Oracle_Connect()
@@ -45,7 +46,7 @@ def attack(text):
 
     if sigma < 0:
         raise SystemExit
-    if Verify(m,sigma):
+    if Verify(m, sigma):
         print "Oracle is working properly!"
     else:
         print "Oracle worked failed!"

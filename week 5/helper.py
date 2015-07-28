@@ -5,6 +5,7 @@ def egcd(a, b):
         g, y, x = egcd(b % a, a)
         return (g, x - (b // a) * y, y)
 
+
 def modinv(a, m):
     gcd, x, y = egcd(a, m)
     if gcd != 1:
@@ -12,11 +13,13 @@ def modinv(a, m):
     else:
         return x % m
 
+
 def ascii_to_int(m):
     val = ""
     for x in m:
         val += hex(ord(x))[2:]
-    return int("0x" + val,16)
+    return int("0x" + val, 16)
+
 
 def ascii_to_bin(m):
     val = ""

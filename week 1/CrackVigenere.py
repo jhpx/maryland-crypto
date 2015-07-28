@@ -62,7 +62,7 @@ def find_length(ctext, min_key_length, max_key_length):
         min_key_length = min(len(ctext), 2)
     if(max_key_length <= 0):
         max_key_length = len(ctext) / 10
-    #Guess a intial length, update the distribution to overwrite it
+    # Guess a intial length, update the distribution to overwrite it
     length = min_key_length
     distribution = 1.0 / 256
     print "initial distribution:", distribution
@@ -74,8 +74,9 @@ def find_length(ctext, min_key_length, max_key_length):
             stream = list(ctext[i::N])
             # Sum all stream's distribution in order to take average
             # distribution
-            d += sum((1.0 * stream.count(p) / len(stream))
-                     ** 2 for p in stream)
+            d += sum(
+                (1.0 * stream.count(p) / len(stream)) ** 2
+                for p in stream)
         # Take average distribution for every stream
         d /= N
         # Update distribution

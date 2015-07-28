@@ -20,25 +20,27 @@ from oracle import *
 sampletext = 'This sample message is 32 chars\n'
 targettext = 'I, the server, hereby agree that I will pay $100 to this student'
 
+
 def strxor(a, b):
-        """xor two strings of different lengths"""
-        strlist = [chr(ord(x) ^ ord(y)) for (x, y) in zip(a, b)]
-        return "".join(strlist)
+    """xor two strings of different lengths"""
+    strlist = [chr(ord(x) ^ ord(y)) for (x, y) in zip(a, b)]
+    return "".join(strlist)
+
 
 def attack(text):
     '''Find tag for given text.'''
     Oracle_Connect()
-    if(len(text)%32 == 0):
+    if(len(text) % 32 == 0):
         tag = Mac(text[0:32], 32)
-        for i in range(1, len(text)/32):
-            first16 = text[i*32:i*32+16]
-            second16 = text[i*32+16:i*32+32]
+        for i in range(1, len(text) / 32):
+            first16 = text[i * 32:i * 32 + 16]
+            second16 = text[i * 32 + 16:i * 32 + 32]
 
             d = strxor(str(tag), first16) + second16
             tag = Mac(d, len(d))
     ret = Vrfy(text, len(text), tag)
 
-    if (ret==1):
+    if (ret == 1):
         print "Message verified successfully!"
     else:
         print "Message verification failed."

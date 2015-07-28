@@ -15,13 +15,13 @@
 import time
 import re
 ciphertexts = [x.decode('hex') for x in [
-'BB3A65F6F0034FA957F6A767699CE7FABA855AFB4F2B520AEAD612944A801E',
-'BA7F24F2A35357A05CB8A16762C5A6AAAC924AE6447F0608A3D11388569A1E',
-'A67261BBB30651BA5CF6BA297ED0E7B4E9894AA95E300247F0C0028F409A1E',
-'A57261F5F0004BA74CF4AA2979D9A6B7AC854DA95E305203EC8515954C9D0F',
-'BB3A70F3B91D48E84DF0AB702ECFEEB5BC8C5DA94C301E0BECD241954C831E',
-'A6726DE8F01A50E849EDBC6C7C9CF2B2A88E19FD423E0647ECCB04DD4C9D1E',
-'BC7570BBBF1D46E85AF9AA6C7A9CEFA9E9825CFD5E3A0047F7CD009305A71E']]
+    'BB3A65F6F0034FA957F6A767699CE7FABA855AFB4F2B520AEAD612944A801E',
+    'BA7F24F2A35357A05CB8A16762C5A6AAAC924AE6447F0608A3D11388569A1E',
+    'A67261BBB30651BA5CF6BA297ED0E7B4E9894AA95E300247F0C0028F409A1E',
+    'A57261F5F0004BA74CF4AA2979D9A6B7AC854DA95E305203EC8515954C9D0F',
+    'BB3A70F3B91D48E84DF0AB702ECFEEB5BC8C5DA94C301E0BECD241954C831E',
+    'A6726DE8F01A50E849EDBC6C7C9CF2B2A88E19FD423E0647ECCB04DD4C9D1E',
+    'BC7570BBBF1D46E85AF9AA6C7A9CEFA9E9825CFD5E3A0047F7CD009305A71E']]
 
 ciphertext2 = [x.decode('hex') for x in [
     '315c4eeaa8b5f8aaf9174145bf43e1784b8fa00dc71d885a804e5ee9fa40b16349c146'
@@ -82,11 +82,13 @@ letterfreq = {
 
 # @see http://mdickens.me/typing/letter_frequency.html
 punctuationfreq = {
-',':0.08, '.':0.06, '-':0.032, '\"':0.031, '_':0.03, '\'':0.025, ')':0.02,
-'(':0.02, ';':0.01, '=':0.005, ':':0.004, '/':0.003, '*':0.003, '!':0.002,
-'?':0.001, '$':0.001, '>':0.001, '{':0.001, '}':0.001, '[':0.001, ']':0.001,
-'\\':0.001, '+':0.001, '|':0.001, '&':0.001, '<':0.001, '%':0.001, '@':0.001,
-'#':0.001, '^':0.001, '`':0.001, '~':0.001}
+    ',': 0.08, '.': 0.06, '-': 0.032, '\"': 0.031, '_': 0.03, '\'': 0.025,
+    ')': 0.02,    '(': 0.02, ';': 0.01, '=': 0.005, ':': 0.004, '/': 0.003,
+    '*': 0.003, '!': 0.002, '?': 0.001, '$': 0.001, '>': 0.001, '{': 0.001,
+    '}': 0.001, '[': 0.001, ']': 0.001,    '\\': 0.001, '+': 0.001, '|': 0.001,
+    '&': 0.001, '<': 0.001, '%': 0.001, '@': 0.001,    '#': 0.001, '^': 0.001,
+    '`': 0.001, '~': 0.001}
+
 
 class SymbolTable(object):
 
@@ -113,25 +115,25 @@ class SymbolTable(object):
     @staticmethod
     def weight(dec):
         """Return a reasonable weight for a given symbol"""
-        if (dec==0): #\x00
+        if (dec == 0):  # \x00
             return 10
-        elif (dec < 0x20): #Non-visiable
+        elif (dec < 0x20):  # Non-visiable
             return 0
-        elif (dec == 0x20): #SPACE
+        elif (dec == 0x20):  # SPACE
             return 10
-        elif(dec<= 0x2f): #!"#$%&'()*+,-./
+        elif(dec <= 0x2f):  # !"#$%&'()*+,-./
             return 1
-        elif (dec<= 0x39): #0-9
+        elif (dec <= 0x39):  # 0-9
             return 2
-        elif (dec<= 0x40): #:;<=>?@
+        elif (dec <= 0x40):  # :;<=>?@
             return 1
-        elif (dec<= 0x5A): #A-Z
+        elif (dec <= 0x5A):  # A-Z
             return 10
-        elif (dec<= 0x60): #[\]^_`
+        elif (dec <= 0x60):  # [\]^_`
             return 1
-        elif (dec<= 0x7A): #a-z
+        elif (dec <= 0x7A):  # a-z
             return 10
-        elif (dec<= 0x7E): #{|}~
+        elif (dec <= 0x7E):  # {|}~
             return 1
         else:
             return 0
@@ -154,6 +156,7 @@ class SymbolTable(object):
         return self.positions(target, self._sTable)
     pass
 
+
 def strxor_lp(a, b):
     """xor two strings of different lengths, loop xor"""
     if len(a) < len(b):
@@ -164,10 +167,12 @@ def strxor_lp(a, b):
         strlist = [chr(ord(a[i]) ^ ord(b[i % len(b)])) for i in range(len(a))]
         return "".join(strlist)
 
+
 def strxor(a, b):
-        """xor two strings of different lengths"""
-        strlist = [chr(ord(x) ^ ord(y)) for (x, y) in zip(a, b)]
-        return "".join(strlist)
+    """xor two strings of different lengths"""
+    strlist = [chr(ord(x) ^ ord(y)) for (x, y) in zip(a, b)]
+    return "".join(strlist)
+
 
 def crack(ctext):
     """crack ciphertexts generated using a Vigenere-like cipher"""
@@ -186,7 +191,7 @@ def find_length(ctext):
 def find_bytes(ctext, length):
     """find key bytes in given length"""
     key_set = []
-    key =[]
+    key = []
     # Guess key byte by byte, find possible keys
     for i in range(length):
         symbolProbability = SymbolTable()
@@ -196,8 +201,11 @@ def find_bytes(ctext, length):
             # Test b with the other characters in the stream
             xor_result = [ord(ctext[j][i]) ^ b for j in range(1, len(ctext))]
             # Calculate the locally weight under b
-            symbolProbability[s0] =sum(SymbolTable.weight(s) for s in xor_result) + SymbolTable.weight(ord(s0))
-        key_set.append(set(syb ^ ord(ctext[0][i]) for syb in symbolProbability.symbol_dec()))
+            symbolProbability[s0] = sum(
+                SymbolTable.weight(s) for s in xor_result
+            ) + SymbolTable.weight(ord(s0))
+        key_set.append(set(syb ^ ord(ctext[0][i])
+                           for syb in symbolProbability.symbol_dec()))
         key.append(chr(key_set[-1].pop()))
 
     # Check key byte by byte, using global distribution to make a decition
@@ -217,7 +225,7 @@ if __name__ == "__main__":
     secret = crack(ciphertexts)
     print "The key is:"
     print secret.encode('hex')
-#    secret = 'f21a049bd07323c83998ce090ebc86dac9e039892a5f726783a561fd25ee30'.decode('hex')
+#   'f21a049bd07323c83998ce090ebc86dac9e039892a5f726783a561fd25ee30'
 
     print "The plaintext is:"
     for ciphertext in ciphertexts:

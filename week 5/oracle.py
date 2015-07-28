@@ -6,14 +6,16 @@ NOT_BINARY_STR_ERR = -1
 MISSING_DELIMITER_ERR = -2
 ORIGINAL_MSG_ERR = -3
 
-#SERVER_IP = '52.7.91.172' #if you are closer to the East Coast of the US
-SERVER_IP = '52.25.162.51' #if you are closer to the West Coast of the US
+# SERVER_IP = '52.7.91.172' # if you are closer to the East Coast of the US
+SERVER_IP = '52.25.162.51'  # if you are closer to the West Coast of the US
+
 
 def Oracle_Connect():
     import socket
     global sign_sock
     global vrfy_sock
-    sign_sock, vrfy_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM), socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sign_sock, vrfy_sock = socket.socket(
+        socket.AF_INET, socket.SOCK_STREAM), socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         sign_sock.connect((SERVER_IP, 8080))
         vrfy_sock.connect((SERVER_IP, 8081))
@@ -24,6 +26,7 @@ def Oracle_Connect():
     print "Connected to server successfully."
 
     return 0
+
 
 def Oracle_Disconnect():
     if not sign_sock or not vrfy_sock:
@@ -39,6 +42,8 @@ def Oracle_Disconnect():
 
 # Packet Structure: < message >
 # Message may be either a long integer, or a binary string
+
+
 def Sign(msg):
     if not sign_sock or not vrfy_sock:
         print "[WARNING]: You haven't connected to the server yet."
@@ -67,6 +72,8 @@ def Sign(msg):
 
 # Packet Structure: < message | ":" | signature >
 # Message and signature may be either long integers, or binary strings
+
+
 def Verify(msg, sigma):
     if not sign_sock or not vrfy_sock:
         print "[WARNING]: You haven't conected to the server yet."

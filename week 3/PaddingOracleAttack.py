@@ -17,53 +17,54 @@ from oracle import *
 ciphertexts = ('9F0B13944841A832B2421B9EAF6D9836813EC9D944A5C834'
                '7A7CA69AA34D8DC0DF70E343C4000A2AE35874CE75E64C31')
 
-B = 16 # block_size
+B = 16  # block_size
+
 
 def hex_to_IntList(data):
-    return [(int(data[i:i+2],16)) for i in range(0, len(data), 2)]
+    return [(int(data[i:i + 2], 16)) for i in range(0, len(data), 2)]
 
-def get_block(c, blk):
-    return c[blk*B:(blk+1)*B]
 
 def attack(c):
     # message m ,length is shorter then ciphertext c by one block
     # initialize m = '------------------------------'
-    #m = [45] * (len(c) - B)
-    m = map(ord,'Yay! You get an ') + [45]*16
+    m = [45] * (len(c) - B)
     Oracle_Connect()
 
     # guess from the first block to the last block
-    for blk in range(2, len(c) / B):
-        #for the 1st block, iv = iv;
-        #for the 2nd block, iv = c1;
-        iv = get_block(c, blk-1)
+    for blk in range(0, len(c) / B - 1):
+        # reset msg, only 2 blocks long
+        # for the 1st run, msg = iv + c1;
+        # for the 2nd run, msg = c1 + c2;
+        msg = list(c[blk * B:(blk + 2) * B])
 
-        #reset msg, '+' is list concat
-        msg = list(iv) + get_block(c, blk)
+        # guess from the last byte to the first byte
+        # (here, B-1 >= p >= 0)
+        for p in range(B - 1, -1, -1):
+            # backup a base value for the current byte before apply guess to it
+            msg_p_backup = msg[p]
 
-        # guess from the last byte to the first byte (here, 0<=p<=B-1)
-        for p in range(B-1, -1, -1):
-            #make the previous guesses applied to all the previous bytes
-            #so that iv[i] = iv[i] xor m[pos] xor (B-p)
-            #(here, p+1<=i<=B-1 ,iv[B-1] is the last byte)
-            for i in range(B-1, p, -1):
-                msg[i] = iv[i] ^ m[(blk-1)*B+ i] ^ (B-p)
+            # make the previous guesses applied to all the previous bytes
+            # since msg'[i] = msg_p_backup xor m[i] xor PADDING
+            # and msg[i] = msg_p_backup xor m[i] xor LAST_PADDING
+            # so msg'[i] = msg[i] xor LAST_PADDING xor PADDING
+            for i in range(B - 1, p, -1):
+                msg[i] = msg[i] ^ (B - p - 1) ^ (B - p)
 
             # guess a value 'G' for the current byte
-            for G in range(0, 128):
-                #send (iv[p] xor G xor PADDING) for the new guess byte
-                msg[p] = iv[p] ^ G ^ (B-p)
-                print "Send ", G
+            for G in range(2, 127):
+                # send (msg_p_backup xor G xor PADDING) for verify
+                msg[p] = msg_p_backup ^ G ^ (B - p)
+#                print "Send: ", G, msg
                 rc = Oracle_Send(msg, 2)
 
                 if rc:
-                    #guess correct ,set m[pos] is our guess value 'G'
-                    m[(blk-1)*B+ p] = G
-                    print "Current message is :'{}'".format(''.join(map(chr, m)))
+                    # guess correct ,set m[pos] is our guess value 'G'
+                    m[blk * B + p] = G
+                    print "The plaintext is :'{}'".format(''.join(map(chr, m)))
                     break
 
                 # all guess wrong, means my program is wrong
-                if G >= 128:
+                if G >= 126:
                     print "Something wrong!"
                     return
     Oracle_Disconnect()

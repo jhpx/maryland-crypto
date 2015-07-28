@@ -1,7 +1,8 @@
 s = None
 
-#SERVER_IP = '52.7.91.172' #if you are closer to the East Coast of the US
-SERVER_IP = '52.25.162.51' #if you are closer to the West Coast of the US
+# SERVER_IP = '52.7.91.172' # if you are closer to the East Coast of the US
+SERVER_IP = '52.25.162.51'  # if you are closer to the West Coast of the US
+
 
 def Oracle_Connect():
     import socket
@@ -17,6 +18,7 @@ def Oracle_Connect():
 
     return 0
 
+
 def Oracle_Disconnect():
     if not s:
         print "[WARNING]: You haven't connected to the server yet."
@@ -27,7 +29,10 @@ def Oracle_Disconnect():
 
     return 0
 
-# Packet Structure: < num_blocks(1) || ciphertext(16*num_blocks) || null-terminator(1) >
+# Packet Structure: < num_blocks(1) || ciphertext(16*num_blocks) ||
+# null-terminator(1) >
+
+
 def Oracle_Send(ctext, num_blocks):
     if not s:
         print "[WARNING]: You haven't connected to the server yet."
